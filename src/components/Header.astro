@@ -1,0 +1,44 @@
+---
+import { Radar, BookText, Github } from 'lucide-astro';
+
+export interface Props {
+  active?: 'home' | 'chronicles';
+}
+
+const { active } = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Home', key: 'home' as const, Icon: Radar },
+  { href: '/chronicles', label: 'Chronicles', key: 'chronicles' as const, Icon: BookText },
+];
+---
+
+<header class="chronicled-header">
+  <div class="container">
+    <a class="brand" href="/">
+      <span class="mark">
+        <Radar size={16} strokeWidth={2.25} />
+      </span>
+      <span>Nanobot Radar</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      {
+        navItems.map(({ href, label, key, Icon }) => (
+          <a href={href} class={active === key ? 'active' : ''}>
+            <Icon size={16} strokeWidth={1.75} />
+            <span class="label">{label}</span>
+          </a>
+        ))
+      }
+      <a
+        href="https://github.com/hamb1y-bot-hkuds-nanobot"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Bot GitHub"
+      >
+        <Github size={16} strokeWidth={1.75} />
+        <span class="label">Bot GitHub</span>
+      </a>
+    </nav>
+  </div>
+</header>

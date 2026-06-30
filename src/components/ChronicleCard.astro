@@ -1,0 +1,42 @@
+---
+import { ArrowUpRight, Calendar, Github } from 'lucide-astro';
+
+export interface Props {
+  href: string;
+  title: string;
+  date: Date;
+  summary: string;
+  issue?: number;
+}
+
+const { href, title, date, summary, issue } = Astro.props;
+
+const formatted = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const iso = date.toISOString().slice(0, 10);
+---
+
+<a class="chronicle-card" href={href}>
+  <div class="meta">
+    <Calendar size={12} strokeWidth={1.75} />
+    <time datetime={iso}>{formatted}</time>
+    {
+      issue && (
+        <span class="issue-badge">
+          <Github size={11} strokeWidth={1.75} />
+          #{issue}
+        </span>
+      )
+    }
+  </div>
+  <div class="title">{title}</div>
+  <p class="summary">{summary}</p>
+  <span class="more">
+    Read chronicle
+    <ArrowUpRight size={14} strokeWidth={1.75} />
+  </span>
+</a>

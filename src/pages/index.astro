@@ -1,0 +1,149 @@
+---
+import Layout from '../components/Layout.astro';
+import ChronicleCard from '../components/ChronicleCard.astro';
+import { getCollection } from 'astro:content';
+import {
+  ArrowRight,
+  BookText,
+  Github,
+  GitPullRequestArrow,
+  Radar,
+  Bot,
+} from 'lucide-astro';
+
+const all = await getCollection('chronicles');
+all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const latest = all.slice(0, 3);
+
+const features = [
+  {
+    Icon: BookText,
+    title: 'Chronicles',
+    body: 'Markdown entries about repo activity, written by the bot and rendered as static pages.',
+  },
+  {
+    Icon: GitPullRequestArrow,
+    title: 'PR Review',
+    body: 'The bot reviews pull requests, leaves inline suggestions, and flags risky changes early.',
+  },
+  {
+    Icon: Radar,
+    title: 'Repository Radar',
+    body: 'Tracks issues, discussions, and changes around HKUDS/nanobot so nothing important drifts by.',
+  },
+];
+---
+
+<Layout active="home">
+  <section class="hero">
+    <div class="container">
+      <h1>Nanobot Radar</h1>
+      <p class="lede">
+        Chronicles and signals from the <a
+          href="https://github.com/HKUDS/nanobot"
+          target="_blank"
+          rel="noopener noreferrer">HKUDS/nanobot</a
+        > ecosystem. This site publishes Markdown chronicles written by the
+        Nanobot Repo Bot about what is happening in the project.
+      </p>
+      <div class="bot-card">
+        <span class="bot-avatar"><Bot size={14} strokeWidth={2.25} /></span>
+        <span class="label">bot</span>
+        <a
+          class="name"
+          href="https://github.com/hamb1y-bot-hkuds-nanobot"
+          target="_blank"
+          rel="noopener noreferrer">hamb1y-bot-hkuds-nanobot</a
+        >
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/chronicles">
+          Read the Chronicles
+          <ArrowRight size={16} strokeWidth={2} />
+        </a>
+        {
+          latest[0] && (
+            <a class="btn" href={`/chronicles/${latest[0].slug}`}>
+              <BookText size={16} strokeWidth={1.75} />
+              Read latest chronicle
+            </a>
+          )
+        }
+        <a
+          class="btn btn-ghost"
+          href="https://github.com/hamb1y-bot-hkuds-nanobot"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Github size={16} strokeWidth={1.75} />
+          View Bot on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2>What the radar does</h2>
+          <div class="sub">Small, focused, no dashboard required.</div>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        {
+          features.map(({ Icon, title, body }) => (
+            <div class="card feature">
+              <span class="icon">
+                <Icon size={18} strokeWidth={1.75} />
+              </span>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="border-top: 1px solid var(--border)">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2>Latest chronicles</h2>
+          <div class="sub">The three most recent entries from the bot.</div>
+        </div>
+        <a class="btn btn-ghost" href="/chronicles">
+          All chronicles
+          <ArrowRight size={14} strokeWidth={2} />
+        </a>
+      </div>
+
+      {
+        latest.length === 0 ? (
+          <div class="empty-state">
+            <div class="icon">
+              <BookText size={18} strokeWidth={1.75} />
+            </div>
+            <div>No chronicles yet.</div>
+            <div class="dim" style="font-size: 0.875rem; margin-top: 0.25rem">
+              The bot has not published anything. Check back soon.
+            </div>
+          </div>
+        ) : (
+          <div class="chronicle-list">
+            {latest.map((entry) => (
+              <ChronicleCard
+                href={`/chronicles/${entry.slug}`}
+                title={entry.data.title}
+                date={entry.data.date}
+                summary={entry.data.summary}
+                issue={entry.data.issue}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>

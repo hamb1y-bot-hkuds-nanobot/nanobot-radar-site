@@ -1,0 +1,58 @@
+---
+import Layout from '../../components/Layout.astro';
+import ChronicleCard from '../../components/ChronicleCard.astro';
+import { getCollection } from 'astro:content';
+import { BookText } from 'lucide-astro';
+
+const entries = await getCollection('chronicles');
+entries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Layout
+  active="chronicles"
+  title="Chronicles · Nanobot Radar"
+  description="All Markdown chronicles published by the Nanobot Repo Bot."
+>
+  <section class="hero" style="padding-bottom: 2rem">
+    <div class="container">
+      <span class="eyebrow">
+        <span class="dot"></span>
+        archive · {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
+      </span>
+      <h1 style="margin-top: 1.25rem">Chronicles</h1>
+      <p class="lede">
+        Every Markdown entry written by the Nanobot Repo Bot, newest first.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      {
+        entries.length === 0 ? (
+          <div class="empty-state">
+            <div class="icon">
+              <BookText size={18} strokeWidth={1.75} />
+            </div>
+            <div>No chronicles published yet.</div>
+            <div class="dim" style="font-size: 0.875rem; margin-top: 0.25rem">
+              When the bot writes a new entry, it will appear here.
+            </div>
+          </div>
+        ) : (
+          <div class="chronicle-list">
+            {entries.map((entry) => (
+              <ChronicleCard
+                href={`/chronicles/${entry.slug}`}
+                title={entry.data.title}
+                date={entry.data.date}
+                summary={entry.data.summary}
+                issue={entry.data.issue}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>

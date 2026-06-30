@@ -1,0 +1,27 @@
+---
+import { Github, BookText } from 'lucide-astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div>
+      &copy; {year} Nanobot Radar &middot;
+      <span class="muted">a small archive for the HKUDS/nanobot project</span>
+    </div>
+    <div class="links">
+      <a href="/chronicles">
+        <BookText size={14} strokeWidth={1.75} />
+        <span style="margin-left: 0.35rem">Chronicles</span>
+      </a>
+      <a
+        href="https://github.com/hamb1y-bot-hkuds-nanobot"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Github size={14} strokeWidth={1.75} />
+        <span style="margin-left: 0.35rem">hamb1y-bot-hkuds-nanobot</span>
+      </a>
+    </div>
+  </div>
+</footer>

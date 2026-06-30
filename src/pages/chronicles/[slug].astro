@@ -1,0 +1,71 @@
+---
+import Layout from '../../components/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Calendar, ArrowLeft, Github } from 'lucide-astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('chronicles');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'chronicles'>;
+}
+
+const REPO = 'https://github.com/HKUDS/nanobot';
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const formatted = entry.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const iso = entry.data.date.toISOString().slice(0, 10);
+const issue = entry.data.issue;
+---
+
+<Layout
+  active="chronicles"
+  title={`${entry.data.title} · Nanobot Radar`}
+  description={entry.data.summary}
+>
+  <article class="prose">
+    <div style="margin-bottom: 1.5rem">
+      <a
+        href="/chronicles"
+        style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--text-muted); font-size: 0.875rem;"
+      >
+        <ArrowLeft size={14} strokeWidth={1.75} />
+        All chronicles
+      </a>
+    </div>
+    <div class="meta">
+      <Calendar size={13} strokeWidth={1.75} />
+      <time datetime={iso}>{formatted}</time>
+      {
+        issue && (
+          <a
+            href={`${REPO}/issues/${issue}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="issue-link"
+          >
+            <Github size={12} strokeWidth={1.75} />
+            issue #{issue}
+          </a>
+        )
+      }
+    </div>
+    <h1>{entry.data.title}</h1>
+    <p class="muted" style="font-size: 1.0625rem; margin-top: -0.25rem">
+      {entry.data.summary}
+    </p>
+    <hr />
+    <Content />
+  </article>
+</Layout>
